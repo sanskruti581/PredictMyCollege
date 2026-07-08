@@ -1,0 +1,15 @@
+Diploma Aggregate Percentage (Final Year Score)
+
+General State Merit Number (Overall Rank)
+
+Category Merit Number (Reservation-specific Rank)
+
+Seat Type / Category Allocation (e.g., GOPEN, GSC, GST, GOBC, LOBC, EWS, TFWS)
+
+Seat Matrix Availability / Vacancy in College
+
+Choice Code Preference Order submitted by the candidate
+
+Admission Stage Preference (Stage-I vs. Stage-II Institutional Slide Rules)
+
+Autonomous vs. Non-Autonomous institutional quotas

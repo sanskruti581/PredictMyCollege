@@ -1,0 +1,103 @@
+{
+  "source_file": "mock_cutoff_sample.json",
+  "records": [
+    {
+      "college_id": "1001",
+      "college_name": "Government College of Engineering, Alpha",
+      "choice_code": "100110001",
+      "branch_name": "Computer Science and Engineering",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "GOPEN",
+      "caste_category": "OPEN",
+      "gender": "G",
+      "state_merit_rank": 1200,
+      "cutoff_percentage": 97.5,
+      "admission_stage": "Stage-I"
+    },
+    {
+      "college_id": "1002",
+      "college_name": "Institute of Technology, Beta",
+      "choice_code": "100210015",
+      "branch_name": "Information Technology",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "GOBC",
+      "caste_category": "OBC",
+      "gender": "G",
+      "state_merit_rank": 4500,
+      "cutoff_percentage": 89.4,
+      "admission_stage": "Stage-I"
+    },
+    {
+      "college_id": "1003",
+      "college_name": "City Engineering College, Gamma",
+      "choice_code": "100310020",
+      "branch_name": "AI/ML",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "GSCS",
+      "caste_category": "SCS",
+      "gender": "G",
+      "state_merit_rank": 8000,
+      "cutoff_percentage": 82.75,
+      "admission_stage": "Stage-I"
+    },
+    {
+      "college_id": "1004",
+      "college_name": "Regional Engineering College, Delta",
+      "choice_code": "100410035",
+      "branch_name": "Computer Science and Engineering",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "EWS",
+      "caste_category": "EWS",
+      "gender": "G",
+      "state_merit_rank": 5600,
+      "cutoff_percentage": 85.2,
+      "admission_stage": "Stage-I"
+    },
+    {
+      "college_id": "1005",
+      "college_name": "Tech University, Epsilon",
+      "choice_code": "100510050",
+      "branch_name": "Mechanical Engineering",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "GOPEN",
+      "caste_category": "OPEN",
+      "gender": "G",
+      "state_merit_rank": 15000,
+      "cutoff_percentage": 70.0,
+      "admission_stage": "Stage-I"
+    },
+    {
+      "college_id": "1006",
+      "college_name": "Metropolitan College, Zeta",
+      "choice_code": "100610075",
+      "branch_name": "Information Technology",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "TFWS",
+      "caste_category": "TFWS",
+      "gender": "G",
+      "state_merit_rank": 9800,
+      "cutoff_percentage": 80.25,
+      "admission_stage": "Stage-I"
+    },
+    {
+      "college_id": "1007",
+      "college_name": "Northern Engineering, Eta",
+      "choice_code": "100710090",
+      "branch_name": "AI/ML",
+      "academic_year": "2025-26",
+      "cap_round": 1,
+      "seat_type": "GOPEN",
+      "caste_category": "OPEN",
+      "gender": "G",
+      "state_merit_rank": 3200,
+      "cutoff_percentage": 92.1,
+      "admission_stage": "Stage-I"
+    }
+  ]
+}
