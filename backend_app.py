@@ -86,6 +86,12 @@ def get_fallback_records(q, limit):
             continue
         if q.get("seat_type") and doc.get("seat_type") != q["seat_type"]:
             continue
+        if q.get("caste_category") and doc.get("caste_category") != q["caste_category"]:
+            continue
+        if q.get("academic_year"):
+            year_prefix = q["academic_year"]["$regex"].lstrip("^")
+            if not (doc.get("academic_year") or "").startswith(year_prefix):
+                continue
         if q.get("college_name"):
             terms = q["college_name"]["$regex"].split("|")
             name = (doc.get("college_name") or "").lower()
@@ -99,9 +105,37 @@ def get_fallback_records(q, limit):
     return results[:limit]
 
 
+class Flags(BaseModel):
+    defence: Optional[bool] = False
+    pwd: Optional[bool] = False
+
+
+class SpecialSeats(BaseModel):
+    tfws: Optional[bool] = False
+    minority: Optional[bool] = False
+
+
+class AdvancedFilters(BaseModel):
+    college: Optional[str] = None
+    branch: Optional[str] = None
+    city: Optional[str] = None
+    data_year: Optional[str] = None
+    safety_zones: Optional[List[str]] = None
+    gap_filter: Optional[str] = None
+
+
 class PredictRequest(BaseModel):
-    diploma_percentage: float = Field(..., ge=0.0, le=100.0)
-    caste_category: Optional[str]
+    mode: Optional[str] = "percentage"
+    metric_value: Optional[float] = None
+    diploma_percentage: Optional[float] = Field(default=None, ge=0.0, le=100.0)
+    state_merit_rank: Optional[float] = None
+    caste_category: Optional[str] = None
+    category: Optional[str] = None
+    gender: Optional[str] = None
+    seat_type: Optional[str] = None
+    flags: Optional[Flags] = None
+    special_seats: Optional[SpecialSeats] = None
+    advanced_filters: Optional[AdvancedFilters] = None
     preferred_branches: Optional[List[str]] = None
     district_filters: Optional[List[str]] = None
     top_k: Optional[int] = 50
@@ -124,17 +158,46 @@ class PredictResponse(BaseModel):
     safe: List[ChoiceOut]
 
 
+def _is_all_filter(value: Optional[str]) -> bool:
+    return not value or value.lower().startswith("all ")
+
+
+def _has_advanced_value(value: Optional[str]) -> bool:
+    return bool(value) and not _is_all_filter(value)
+
+
 @app.post("/predict", response_model=PredictResponse)
 def predict(req: PredictRequest):
+    diploma_percentage = req.diploma_percentage
+    if diploma_percentage is None and req.mode == "percentage":
+        diploma_percentage = req.metric_value
+    if diploma_percentage is None:
+        raise HTTPException(status_code=422, detail="diploma_percentage is required for percentage-based prediction")
+
     # build query
     q = {}
-    if req.preferred_branches:
-        q["branch_name"] = {"$in": req.preferred_branches}
-    if req.caste_category:
+    preferred_branches = req.preferred_branches
+    if not preferred_branches and req.advanced_filters and _has_advanced_value(req.advanced_filters.branch):
+        preferred_branches = [req.advanced_filters.branch]
+    if preferred_branches:
+        q["branch_name"] = {"$in": preferred_branches}
+
+    if req.category:
+        q["caste_category"] = req.category
+    elif req.caste_category:
         q["seat_type"] = req.caste_category
 
-    if req.district_filters:
-        q["college_name"] = {"$regex": "|".join(req.district_filters), "$options": "i"}
+    college_terms = list(req.district_filters or [])
+    if req.advanced_filters:
+        if _has_advanced_value(req.advanced_filters.college):
+            college_terms.append(req.advanced_filters.college)
+        if _has_advanced_value(req.advanced_filters.city):
+            college_terms.append(req.advanced_filters.city)
+        if _has_advanced_value(req.advanced_filters.data_year):
+            q["academic_year"] = {"$regex": f"^{req.advanced_filters.data_year.split()[0]}"}
+
+    if college_terms:
+        q["college_name"] = {"$regex": "|".join(college_terms), "$options": "i"}
 
     # only consider records with cutoff_percentage
     q["cutoff_percentage"] = {"$ne": None}
@@ -155,7 +218,7 @@ def predict(req: PredictRequest):
         cutoff = doc.get("cutoff_percentage")
         if cutoff is None:
             continue
-        delta = round(req.diploma_percentage - cutoff, 2)
+        delta = round(diploma_percentage - cutoff, 2)
         out = ChoiceOut(
             college_id=doc.get("college_id"),
             college_name=doc.get("college_name"),
